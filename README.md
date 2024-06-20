@@ -26,3 +26,7 @@ docker-compose up
 ## Notes
 
 If you are on Linux you can run the servers directly but you have to replace the `equeue` and `delay_server` in the urls of both services with `localhost` and then you should be able to run the servers directly.
+
+## Greetings
+
+A huge thanks to Carl Fredrik Samson for the Asynchronous Programming in Rust book that guided me through the creation of this project.
