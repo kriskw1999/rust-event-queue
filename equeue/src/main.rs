@@ -70,7 +70,6 @@ fn get_req(path: &str, host: &str) -> String {
 fn handle_events(
     events: &[Event],
     streams: &mut [TcpStream],
-    // FIX #4: accepts a set of handled events as argument
     handled: &mut HashSet<usize>,
 ) -> Result<usize, io::Error> {
     let mut handled_events = 0;
@@ -81,8 +80,6 @@ fn handle_events(
         loop {
             match streams[index].read(&mut data) {
                 Ok(n) if n == 0 => {
-                    // FIX #4
-                    // `insert` returns false if the value already existed in the set.
                     if !handled.insert(index) {
                         break;
                     }
@@ -98,9 +95,6 @@ fn handle_events(
                     }
                 }
                 Err(e) if e.kind() == io::ErrorKind::WouldBlock => break,
-                // this was not in the book example, but it's a error condition
-                // you probably want to handle in some way (either by breaking
-                // out of the loop or trying a new read call immediately)
                 Err(e) if e.kind() == io::ErrorKind::Interrupted => break,
                 Err(e) => return Err(e),
             }

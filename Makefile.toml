@@ -1,7 +1,0 @@
-[tasks.build]
-command = "docker"
-args = ["build", "-t", "my-rust-app", "."]
-
-[tasks.run]
-command = "docker"
-args = ["run", "-it", "--rm", "my-rust-app"]
