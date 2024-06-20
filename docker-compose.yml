@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  delay_server:
+    build:
+      context: ./delayserver
+      dockerfile: Dockerfile
+    container_name: delay_server
+    ports:
+      - "6666:8080"
+    networks:
+      - rust_network
+
+  equeue:
+    build:
+      context: ./equeue
+      dockerfile: Dockerfile
+    container_name: equeue
+    networks:
+      - rust_network
+    depends_on:
+      - delay_server
+
+networks:
+  rust_network:
+    driver: bridge

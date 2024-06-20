@@ -1,0 +1,25 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN rustc --version
+
+WORKDIR /usr/src/myapp
+
+COPY . .
+
+RUN cargo build --release
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+CMD ["./target/release/delayserver"]
