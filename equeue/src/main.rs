@@ -1,9 +1,9 @@
+use ffi::Event;
+use poll::Poll;
 use std::collections::HashSet;
 use std::io::{self, Read, Write};
 use std::net::{TcpStream, ToSocketAddrs};
 use std::vec;
-use ffi::Event;
-use poll::Poll;
 
 mod ffi;
 mod poll;
@@ -15,12 +15,16 @@ fn main() -> Result<(), io::Error> {
     let mut streams = vec![];
 
     let socket_addresses = "delay_server:8080".to_socket_addrs()?;
-    let socket_address = socket_addresses.into_iter().next().ok_or("Unable to resolve DNS").unwrap();
+    let socket_address = socket_addresses
+        .into_iter()
+        .next()
+        .ok_or("Unable to resolve DNS")
+        .unwrap();
 
     println!("Connecting to: {socket_address}");
 
     for i in 0..n_events {
-        let delay = (n_events -i) * 1000;
+        let delay = (n_events - i) * 1000;
         let url_path = format!("/{delay}/request-{i}");
         let req = get_req(&url_path, &socket_address.to_string());
 
@@ -29,7 +33,8 @@ fn main() -> Result<(), io::Error> {
         stream.set_nonblocking(true)?;
 
         stream.write_all(req.as_bytes())?;
-        poll.registry().register(&stream, i,  ffi::EPOLLIN | ffi::EPOLLET)?;
+        poll.registry()
+            .register(&stream, i, ffi::EPOLLIN | ffi::EPOLLET)?;
 
         streams.push(stream);
     }
